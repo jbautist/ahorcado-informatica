@@ -7,7 +7,7 @@ import diagramas
 clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
 
-def quietar_tilde(palabra):
+def quitar_tilde(palabra):
     '''Retorna: palabra sin tilde en el caso de que contenga.'''
     if 'Á' in palabra:
         return palabra.replace('Á', 'A')
@@ -26,11 +26,11 @@ def quietar_tilde(palabra):
 def comprobar_letra(letra, letras_ingresadas):
     '''Retorna: True si la letra ingresada es válida.'''
     if not letra.isalpha():
-        print('ERROR: has ingresado un carácter incorrecto.\n')
+        print('ERROR: has ingresado un carácter inválido.\n')
     elif len(letra) > 1:
         print('ERROR: has ingresado más de una letra.\n')
-    elif letra.upper() in letras_ingresadas:
-        print(f'ERROR: ya has ingresado la letra {letra.upper()}.\n')
+    elif letra in letras_ingresadas:
+        print(f'ERROR: ya has ingresado la letra {letra}.\n')
     else:
         return True
 
@@ -38,7 +38,7 @@ def comprobar_letra(letra, letras_ingresadas):
 def jugar():
     # Definición de variables
     palabra_original = random.choice(palabras.palabras)
-    palabra_adivinar = quietar_tilde(palabra_original)
+    palabra_adivinar = quitar_tilde(palabra_original)
     letras_adivinar = set(palabra_adivinar)
     letras_ingresadas = []
     vidas = 6
@@ -48,14 +48,14 @@ def jugar():
         print(' '.join([letra if letra in letras_ingresadas else '_' for letra in palabra_adivinar]))
         print(diagramas.diagramas[vidas])
         print('Letras ingresadas:', "-".join(letras_ingresadas))
-        letra_usuario = input('\nIngrese una letra: ')
+        letra_usuario = input('\nIngrese una letra: ').upper()
 
         clearConsole()
 
         if comprobar_letra(letra_usuario, letras_ingresadas) == True:
-            letras_ingresadas.append(letra_usuario.upper())
-            if letra_usuario.upper() in letras_adivinar:
-                letras_adivinar.remove(letra_usuario.upper())
+            letras_ingresadas.append(letra_usuario)
+            if letra_usuario in letras_adivinar:
+                letras_adivinar.remove(letra_usuario)
             else:
                 vidas -=1
 
@@ -84,16 +84,11 @@ while True:
     clearConsole()
     jugar()
 
-    # Bucle para comprobar que el usuario ingrese 's, n, S o N.
-    while True:
-        seguir_jugando = input('¿Quiere jugar de nuevo? [S/N] ')
-        clearConsole()
-        if not seguir_jugando.isalpha():
-            print('ERROR: has ingresado un carácter incorrecto.\n')
-        elif seguir_jugando.upper() == 'S' or seguir_jugando.upper() == 'N':
-            seguir_jugando = seguir_jugando.upper()
+    while True:  
+        seguir_jugando = input('\n¿Quiere seguir jugando? [S/N] ').upper()
+        if seguir_jugando == 'S' or seguir_jugando == 'N':
             break
         else:
-            print('ERROR: has ingresado una letra incorrecta.\n')
+            print('\nERROR: ha ingresado un carácter inválido.')
 
     if seguir_jugando == 'N': break
